@@ -16,29 +16,17 @@ pub trait Vectorable<K>
 where
     K: Copy + PartialEq + PartialOrd,
 {
-    fn into(&self) -> Vec<K>;
+    fn to_vec(&self) -> Vec<K>;
 }
 
 #[macro_use]
 pub mod macros;
 
-pub trait Radix<K, V, P: Vectorable<K>>
-where
-    K: Copy + PartialEq + PartialOrd,
-    V: Clone,
-{
-    fn remove(&mut self, path: P);
-    fn insert(&mut self, path: P, data: V) -> &mut Self;
-    fn find(&self, path: P) -> Option<&Self>;
-    fn add_node(&mut self, path: P, data: V) -> &mut Self;
-    fn find_node(&self, path: P) -> Option<&Self>;
-}
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct Node<K, V> {
-    pub path: Vec<K>,
+    pub path: Vec<K>, // path from root to node
     pub data: Option<V>,
-    pub indices: Vec<K>,
+    pub indices: Vec<K>, // indices of children
     pub nodes: Vec<Node<K, V>>,
 }
 
@@ -50,7 +38,7 @@ where
     pub fn new<P: Vectorable<K>>(path: P, data: Option<V>) -> Self {
         Node {
             data,
-            path: (&path).into(),
+            path: path.to_vec(),
             nodes: Vec::new(),
             indices: Vec::new(),
         }
@@ -206,29 +194,23 @@ where
         // not found
         None
     }
-}
 
-impl<K, V, P: Vectorable<K>> Radix<K, V, P> for Node<K, V>
-where
-    K: Copy + PartialEq + PartialOrd,
-    V: Clone,
-{
     #[allow(unused_variables)]
-    fn remove(&mut self, path: P) {}
+    pub fn remove<P: Vectorable<K>>(&mut self, path: P) {}
 
-    fn insert(&mut self, path: P, data: V) -> &mut Self {
-        self.insert_with(&mut (&path).into(), Some(data), true, pos)
+    pub fn insert<P: Vectorable<K>>(&mut self, path: P, data: V) -> &mut Self {
+        self.insert_with(&mut path.to_vec(), Some(data), true, pos)
     }
 
-    fn find(&self, path: P) -> Option<&Self> {
-        self.find_with(&mut (&path).into())
+    pub fn find<P: Vectorable<K>>(&self, path: P) -> Option<&Self> {
+        self.find_with(&mut path.to_vec())
     }
 
-    fn add_node(&mut self, path: P, data: V) -> &mut Self {
-        self.add_node_with(&mut (&path).into(), Some(data), 0, true, pos)
+    pub fn add_node<P: Vectorable<K>>(&mut self, path: P, data: V) -> &mut Self {
+        self.add_node_with(&mut path.to_vec(), Some(data), 0, true, pos)
     }
 
-    fn find_node(&self, path: P) -> Option<&Self> {
-        self.find_node_with(&mut (&path).into(), 0)
+    pub fn find_node<P: Vectorable<K>>(&self, path: P) -> Option<&Self> {
+        self.find_node_with(&mut path.to_vec(), 0)
     }
 }

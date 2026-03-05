@@ -1,7 +1,7 @@
 use crate::Vectorable;
+use alloc::borrow::ToOwned;
 use alloc::string::String;
 use alloc::vec::Vec;
-use alloc::borrow::ToOwned;
 
 #[doc(hidden)]
 #[macro_export]
@@ -10,7 +10,7 @@ macro_rules! impl_vec {
     ($from: ty, $to: ty, $transform: expr) => {
         impl Vectorable<$to> for $from {
             #[inline]
-            fn into(&self) -> Vec<$to> {
+            fn to_vec(&self) -> Vec<$to> {
                 $transform(self)
             }
         }
@@ -27,7 +27,7 @@ macro_rules! impl_vec_k {
             K: Copy + PartialEq + PartialOrd,
         {
             #[inline]
-            fn into(&self) -> Vec<K> {
+            fn to_vec(&self) -> Vec<K> {
                 $transform(self)
             }
         }

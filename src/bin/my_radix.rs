@@ -1,4 +1,4 @@
-use radix_tree::{Node, Radix};
+use radix_tree::Node;
 
 fn main() {
     let mut tree = Node::<char, bool>::new("", Some(false));

@@ -1,4 +1,4 @@
-use radix_tree::{Node, Radix};
+use radix_tree::Node;
 
 macro_rules! find {
     ($tree:expr, $($path:expr, $data:expr),*,) => {{
