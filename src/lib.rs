@@ -23,6 +23,14 @@ where
 pub mod macros;
 
 #[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(
+    feature = "serde",
+    serde(bound(
+        serialize = "K: serde::Serialize, V: serde::Serialize",
+        deserialize = "K: serde::Deserialize<'de>, V: serde::Deserialize<'de>"
+    ))
+)]
 pub struct Node<K, V> {
     pub path: Vec<K>, // path from root to node
     pub data: Option<V>,
