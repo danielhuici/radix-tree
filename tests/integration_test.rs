@@ -64,9 +64,9 @@ fn new_any_type_node() {
 #[test]
 fn node_insert_and_find() {
     let mut node = Node::<char, bool>::new("你好，世界！", Some(true));
-    node.add_node("Rust", true);
+    node.insert("Rust", true);
 
-    let n1 = node.find_node("Rust");
+    let n1 = node.find("Rust");
     let n2 = node.find("你好，世界！Rust");
     assert_eq!(n1, n2);
 }
@@ -76,32 +76,32 @@ fn node_insert_then_return_new_node() {
     let mut tree = Node::<u8, u8>::new("", Some(b' '));
 
     let a = tree.insert("a", b'a');
-    let b = a.add_node("b", b'b');
-    let c = b.add_node("c", b'c');
-    let d = c.add_node("d", b'd');
-    let _ = d.add_node("e", b'e');
+    let b = a.insert("b", b'b');
+    let c = b.insert("c", b'c');
+    let d = c.insert("d", b'd');
+    let _ = d.insert("e", b'e');
 
     let node = tree.find("a");
     assert_eq!(node.is_some(), true);
     let a = node.unwrap();
     assert_eq!(a.data.unwrap(), b'a');
 
-    let node = a.find_node("b");
+    let node = a.find("b");
     assert_eq!(node.is_some(), true);
     let b = node.unwrap();
     assert_eq!(b.data.unwrap(), b'b');
 
-    let node = b.find_node("c");
+    let node = b.find("c");
     assert_eq!(node.is_some(), true);
     let c = node.unwrap();
     assert_eq!(c.data.unwrap(), b'c');
 
-    let node = c.find_node("d");
+    let node = c.find("d");
     assert_eq!(node.is_some(), true);
     let d = node.unwrap();
     assert_eq!(d.data.unwrap(), b'd');
 
-    let node = d.find_node("e");
+    let node = d.find("e");
     assert_eq!(node.is_some(), true);
     let e = node.unwrap();
     assert_eq!(e.data.unwrap(), b'e');
@@ -204,8 +204,8 @@ fn clone_node() {
     let mut node2 = node.clone();
     assert_eq!(node, node2);
 
-    node.add_node("/", true);
-    node2.add_node("/", true);
+    node.insert("/", true);
+    node2.insert("/", true);
     assert_eq!(node, node2);
 
     #[derive(Debug, Clone, PartialEq)]
@@ -224,14 +224,14 @@ fn clone_node() {
     let mut node2 = node.clone();
     assert_eq!(node, node2);
 
-    node.add_node(
+    node.insert(
         "users",
         NodeMetadata {
             is_key: true,
             params: Some(vec!["tree"]),
         },
     );
-    node2.add_node(
+    node2.insert(
         "users",
         NodeMetadata {
             is_key: true,
